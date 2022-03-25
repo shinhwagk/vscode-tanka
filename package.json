@@ -3,34 +3,89 @@
 	"displayName": "vscode-tanka",
 	"description": "a sample tanka extension.",
 	"version": "0.0.1",
+	"publisher": "shinhwagk",
+	"preview": true,
 	"engines": {
 		"vscode": "^1.65.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/shinhwagk/vscode-tanka"
 	},
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vscode-tanka.helloWorld"
+		"workspaceContains:environments/**/main.jsonnet"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"views": {
+			"explorer": [
+				{
+					"id": "TankaExplorer",
+					"name": "Tanka Environments",
+					"contextualTitle": "Package Explorer",
+					"when": "tankaEnabled"
+				}
+			]
+		},
+		"menus": {
+			"view/item/context": [
+				{
+					"command": "vscode-tanka.env.show",
+					"when": "view == TankaExplorer"
+				},
+				{
+					"command": "vscode-tanka.env.apply",
+					"when": "view == TankaExplorer"
+				}
+			],
+			"view/title": [
+				{
+					"command": "tanka.refresh",
+					"group": "navigation",
+					"when": "view == TankaExplorer"
+				}
+			]
+		},
 		"commands": [
 			{
-				"command": "vscode-tanka.helloWorld",
-				"title": "Hello World"
+				"command": "tanka.refresh",
+				"title": "refresh",
+				"icon": {
+					"light": "images/refresh_light.svg",
+					"dark": "images/refresh_dark.svg"
+				}
+			},
+			{
+				"command": "vscode-tanka.env.show",
+				"title": "show"
+			},
+			{
+				"command": "vscode-tanka.env.apply",
+				"title": "apply"
 			}
-		]
+		],
+		"configuration": {
+			"properties": {
+				"tanka.enable": {
+					"type": "boolean",
+					"default": false,
+					"examples": [
+						true,
+						false
+					]
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run package",
 		"compile": "webpack",
-		"watch": "webpack --watch",
 		"package": "webpack --mode production --devtool hidden-source-map",
-		"compile-tests": "tsc -p . --outDir out",
-		"watch-tests": "tsc -p . -w --outDir out",
-		"pretest": "npm run compile-tests && npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"watch": "tsc -p . -w --outDir dist",
+		"lint": "eslint src --ext ts"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.65.0",

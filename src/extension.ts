@@ -1,26 +1,71 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { TankaEnvironmentsTreeDataProvider, TankaNode } from './explorer';
+import { Tanka } from './tanka';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "vscode-tanka" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('vscode-tanka.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from vscode-tanka!');
-	});
-
-	context.subscriptions.push(disposable);
+function toggleDisplayProvider() {
+	console.log(111, vscode.workspace.getConfiguration().get<boolean>('tanka.enable'));
+	const toggle = vscode.workspace.getConfiguration().get<boolean>('tanka.enable');
+	vscode.commands.executeCommand('setContext', 'tankaEnabled', toggle);
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+export function activate(context: vscode.ExtensionContext) {
+	console.log('Congratulations, your extension "tanka" is now active!');
+
+	const registerCommand = (command: string, callback: (...args: any[]) => any, thisArg?: any) =>
+		context.subscriptions.push(vscode.commands.registerCommand(command, callback, thisArg));
+
+	const outputChannel: vscode.OutputChannel = vscode.window.createOutputChannel('tanka');
+	context.subscriptions.push(outputChannel);
+
+	const rootPath =
+		vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
+			? vscode.workspace.workspaceFolders[0].uri.fsPath
+			: undefined;
+
+	vscode.workspace.onDidChangeConfiguration(
+		(event: vscode.ConfigurationChangeEvent) => {
+			if (event.affectsConfiguration('tanka')) {
+				toggleDisplayProvider();
+			}
+		},
+		{},
+		context.subscriptions,
+	);
+
+	const tanka = new Tanka(rootPath!, outputChannel);
+
+	const tankaProvider = new TankaEnvironmentsTreeDataProvider(tanka);
+	context.subscriptions.push(vscode.window.registerTreeDataProvider('TankaExplorer', tankaProvider));
+
+	tanka.freshEnvironments().then(() => toggleDisplayProvider());
+
+	registerCommand('tanka.refresh', async () => {
+		await tanka.freshEnvironments();
+		tankaProvider.refresh(undefined);
+	});
+
+	registerCommand('vscode-tanka.env.show', async (tankaNode: TankaNode) => {
+		const { code, stdout, stderr } = await tanka.show(tankaNode.env);
+		if (code === 0) {
+			const doc = await vscode.workspace.openTextDocument({ language: 'yaml', content: stdout });
+			vscode.window.showTextDocument(doc, { preview: true });
+			outputChannel.appendLine(stdout);
+			return;
+		}
+		outputChannel.appendLine(stderr);
+		outputChannel.show();
+	});
+
+	registerCommand('vscode-tanka.env.apply', async (tankaNode: TankaNode) => {
+		const name = tankaNode.env?.metadata.name!;
+		const { code, stdout, stderr } = await tanka.apply(tankaNode.env);
+		if (code === 0) {
+			outputChannel.appendLine(stdout);
+			return;
+		}
+		outputChannel.appendLine(stderr);
+		outputChannel.show();
+	});
+}
+
+export function deactivate() { }

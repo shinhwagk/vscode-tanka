@@ -1,0 +1,13 @@
+{
+  "apiVersion": "tanka.dev/v1alpha1",
+  "kind": "Environment",
+  "metadata": {
+    "name": "environments/abc"
+  },
+  "spec": {
+    "apiServer": "abcc",
+    "namespace": "abc",
+    "resourceDefaults": {},
+    "expectVersions": {}
+  }
+}
