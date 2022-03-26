@@ -1,4 +1,6 @@
-import { TreeDataProvider, EventEmitter, Event, TreeItemCollapsibleState, TreeItem, MarkdownString } from 'vscode';
+import * as path from 'path';
+
+import { TreeDataProvider, EventEmitter, Event, TreeItem, MarkdownString } from 'vscode';
 
 import { Tanka, TankaEnvironment } from './tanka';
 
@@ -10,6 +12,13 @@ export class TankaNode extends TreeItem {
     }
     description = this.generateDescription();
     tooltip = new MarkdownString(this.description);
+
+    _icon = path.join(__filename, '..', '..', 'images', 'tanka.svg');
+
+    iconPath = {
+        light: this._icon,
+        dark: this._icon
+    };
 
     private generateDescription() {
         return `apiServer: ${this.env.spec.apiServer}, namespace: ${this.env.spec.namespace}`;

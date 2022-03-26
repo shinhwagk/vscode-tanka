@@ -10,7 +10,15 @@ export interface ShellResult {
 };
 
 export async function exec(cmd: string) {
-    return new Promise<ShellResult>(resolve => cp.exec(cmd, (err, stdout, stderr) => resolve({ code: err?.code || 0, stdout: stdout, stderr: stderr })));
+    return new Promise<ShellResult>(resolve =>
+        cp.exec(cmd, (err, stdout, stderr) =>
+            resolve({
+                code: err?.code || 0,
+                stdout: stdout,
+                stderr: stderr
+            })
+        )
+    );
 };
 
 export interface TankaEnvironment {
@@ -29,11 +37,21 @@ export interface TankaEnvironment {
 
 export class Tanka {
     private environments: TankaEnvironment[] = [];
+    private refreshing = false;
 
     constructor(private readonly rootPath: string, private readonly outputChannel: vscode.OutputChannel) { }
 
-    async freshEnvironments() {
-        this.environments = await this.generateEnvironments();
+    async refreshEnvironments() {
+        if (this.refreshing === false) {
+            this.refreshing = true;
+            try {
+                this.environments = await this.generateEnvironments();
+            } finally {
+                this.refreshing = false;
+            }
+        } else {
+            this.outputChannel.appendLine("refresh in progress.");
+        }
     }
 
     public getEnvironments() {
@@ -41,7 +59,6 @@ export class Tanka {
     }
 
     public async apply(env: TankaEnvironment) {
-        // get app path by remove environments.
         const args: string[] = ['tk', 'apply', path.join(this.rootPath, env.metadata.namespace), '--name', `${env.metadata.name}`, '--dangerous-auto-approve'];
         this.outputChannel.appendLine(args.join(' '));
         return await exec(args.join(' '));

@@ -3,7 +3,6 @@ import { TankaEnvironmentsTreeDataProvider, TankaNode } from './explorer';
 import { Tanka } from './tanka';
 
 function toggleDisplayProvider() {
-	console.log(111, vscode.workspace.getConfiguration().get<boolean>('tanka.enable'));
 	const toggle = vscode.workspace.getConfiguration().get<boolean>('tanka.enable');
 	vscode.commands.executeCommand('setContext', 'tankaEnabled', toggle);
 }
@@ -24,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.workspace.onDidChangeConfiguration(
 		(event: vscode.ConfigurationChangeEvent) => {
-			if (event.affectsConfiguration('tanka')) {
+			if (event.affectsConfiguration('tanka.enable')) {
 				toggleDisplayProvider();
 			}
 		},
@@ -37,10 +36,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const tankaProvider = new TankaEnvironmentsTreeDataProvider(tanka);
 	context.subscriptions.push(vscode.window.registerTreeDataProvider('TankaExplorer', tankaProvider));
 
-	tanka.freshEnvironments().then(() => toggleDisplayProvider());
+	tanka.refreshEnvironments().then(() => toggleDisplayProvider());
 
 	registerCommand('tanka.refresh', async () => {
-		await tanka.freshEnvironments();
+		await tanka.refreshEnvironments();
 		tankaProvider.refresh(undefined);
 	});
 
