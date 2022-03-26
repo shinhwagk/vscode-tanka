@@ -86,7 +86,7 @@
 	"scripts": {
 		"vscode:prepublish": "npm run package",
 		"compile": "webpack",
-		"package": "webpack --mode production --devtool hidden-source-map",
+		"package": "rm -fr dist && webpack --mode production --devtool hidden-source-map",
 		"watch": "tsc -p . -w --outDir dist",
 		"lint": "eslint src --ext ts"
 	},
