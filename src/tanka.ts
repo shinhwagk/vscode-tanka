@@ -58,9 +58,16 @@ export class Tanka {
         return this.environments;
     }
 
+    public async diff(env: TankaEnvironment) {
+        const args: string[] = ['tk', 'diff', path.join(this.rootPath, env.metadata.namespace), '--name', `${env.metadata.name}`];
+        this.outputChannel.appendLine(args.join(' '));
+        return await exec(args.join(' '));
+    }
+
     public async apply(env: TankaEnvironment) {
         const args: string[] = ['tk', 'apply', path.join(this.rootPath, env.metadata.namespace), '--name', `${env.metadata.name}`, '--dangerous-auto-approve'];
         this.outputChannel.appendLine(args.join(' '));
+        this.outputChannel.show()
         return await exec(args.join(' '));
     }
 
