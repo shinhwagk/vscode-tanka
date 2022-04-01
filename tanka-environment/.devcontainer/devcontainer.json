@@ -1,0 +1,14 @@
+{
+  "name": "monitoring-libsonnet",
+  "build": {
+    "dockerfile": "Dockerfile",
+  },
+  "settings": {},
+  "extensions": [
+    "redhat.vscode-yaml",
+    "Grafana.vscode-jsonnet",
+    "yzhang.markdown-all-in-one",
+    "ms-kubernetes-tools.vscode-kubernetes-tools",
+    "shinhwagk.vscode-tanka"
+  ],
+}
