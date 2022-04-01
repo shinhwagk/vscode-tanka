@@ -2,7 +2,7 @@
 	"name": "vscode-tanka",
 	"displayName": "vscode-tanka",
 	"description": "a sample tanka extension.",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"publisher": "shinhwagk",
 	"preview": true,
 	"engines": {
