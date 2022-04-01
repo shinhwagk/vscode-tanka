@@ -11,7 +11,7 @@ export interface ShellResult {
 
 export async function exec(cmd: string) {
     return new Promise<ShellResult>(resolve =>
-        cp.exec(cmd, (err, stdout, stderr) =>
+        cp.exec(cmd, { encoding: 'utf-8' }, (err, stdout, stderr) =>
             resolve({
                 code: err?.code || 0,
                 stdout: stdout,
@@ -60,25 +60,26 @@ export class Tanka {
 
     public async diff(env: TankaEnvironment) {
         const args: string[] = ['tk', 'diff', path.join(this.rootPath, env.metadata.namespace), '--name', `${env.metadata.name}`];
-        this.outputChannel.appendLine(args.join(' '));
+        this.outputChannel.appendLine("command: " + args.join(' '));
         return await exec(args.join(' '));
     }
 
     public async apply(env: TankaEnvironment) {
         const args: string[] = ['tk', 'apply', path.join(this.rootPath, env.metadata.namespace), '--name', `${env.metadata.name}`, '--dangerous-auto-approve'];
-        this.outputChannel.appendLine(args.join(' '));
+        this.outputChannel.appendLine("command: " + args.join(' '));
         this.outputChannel.show()
         return await exec(args.join(' '));
     }
 
     public async show(env: TankaEnvironment) {
         const args: string[] = ['tk', 'show', path.join(this.rootPath, env.metadata.namespace), '--name', env.metadata.name, '--dangerous-allow-redirect'];
-        this.outputChannel.appendLine(args.join(' '));
+        this.outputChannel.appendLine("command: " + args.join(' '));
         return await exec(args.join(' '));
     }
 
     private async generateEnvironments() {
         const args: string[] = ['tk', 'env', 'list', this.rootPath, '--json'];
+        this.outputChannel.appendLine("command: " + args.join(' '));
         const { code, stdout, stderr } = await exec(args.join(' '));
         if (code === 0) {
             this.outputChannel.appendLine(stdout);

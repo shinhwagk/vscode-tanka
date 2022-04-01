@@ -2,7 +2,7 @@
 	"name": "vscode-tanka",
 	"displayName": "vscode-tanka",
 	"description": "a sample tanka extension.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "shinhwagk",
 	"preview": true,
 	"engines": {
@@ -16,7 +16,9 @@
 		"Other"
 	],
 	"keywords": [
-		"tanka"
+		"tanka",
+		"devops",
+		"kubernetes"
 	],
 	"activationEvents": [
 		"workspaceContains:environments/**/main.jsonnet"
@@ -41,6 +43,10 @@
 				},
 				{
 					"command": "vscode-tanka.env.apply",
+					"when": "view == TankaExplorer"
+				},
+				{
+					"command": "vscode-tanka.env.diff",
 					"when": "view == TankaExplorer"
 				}
 			],
@@ -68,6 +74,10 @@
 			{
 				"command": "vscode-tanka.env.apply",
 				"title": "apply"
+			},
+			{
+				"command": "vscode-tanka.env.diff",
+				"title": "diff"
 			}
 		],
 		"configuration": {
@@ -79,6 +89,11 @@
 						true,
 						false
 					]
+				},
+				"tanka.diff.command": {
+					"type": "string",
+					"default": "diff -U 10000",
+					"description": "set KUBECTL_EXTERNAL_DIFF"
 				}
 			}
 		}
