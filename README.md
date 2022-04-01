@@ -9,10 +9,10 @@ Open a workspace that conforms to the [tanka directory structure](https://tanka.
 
 ## Usage
 - show
-![show](https://github.com/shinhwagk/vscode-tanka/blob/main/usages/show.jpg)
+![show](https://github.com/shinhwagk/vscode-tanka/blob/main/usages/show.jpg?raw=true)
 
 - diff
-![diff](https://github.com/shinhwagk/vscode-tanka/blob/main/usages/diff.jpg)
+![diff](https://github.com/shinhwagk/vscode-tanka/blob/main/usages/diff.jpg?raw=true)
 
 ### Examples
 - https://github.com/shinhwagk/vscode-tanka/tree/main/tanka-environment
