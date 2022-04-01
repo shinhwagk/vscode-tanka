@@ -1,7 +1,7 @@
 [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/shinhwagk.vscode-tanka.svg)](https://marketplace.visualstudio.com/items?itemName=shinhwagk.vscode-tanka)
 # vscode-tanka
 
-a sample tanka extension.
+a simple tanka extension.
 
 
 ## Getting Started 
