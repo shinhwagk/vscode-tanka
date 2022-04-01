@@ -2,7 +2,7 @@
 	"name": "vscode-tanka",
 	"displayName": "vscode-tanka",
 	"description": "a sample tanka extension.",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"publisher": "shinhwagk",
 	"preview": true,
 	"engines": {
@@ -98,6 +98,11 @@
 			}
 		}
 	},
+	"extensionDependencies": [
+		"redhat.vscode-yaml",
+		"Grafana.vscode-jsonnet",
+		"ms-kubernetes-tools.vscode-kubernetes-tools"
+	],
 	"scripts": {
 		"vscode:prepublish": "npm run package",
 		"compile": "webpack",
