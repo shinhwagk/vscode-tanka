@@ -1,0 +1,19 @@
+name: cd
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+    - name: deploy to market
+      run: |
+        npm i -g vsce
+        vsce publish -p ${{ secrets.VSCE_TOKEN }}
