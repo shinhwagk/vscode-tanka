@@ -78,7 +78,7 @@ export class Tanka {
     }
 
     private async generateEnvironments() {
-        const args: string[] = ['tk', 'env', 'list', this.rootPath, '--json'];
+        const args: string[] = ['tk', 'env', 'list', this.rootPath + '/environments', '--json'];
         this.outputChannel.appendLine("command: " + args.join(' '));
         const { code, stdout, stderr } = await exec(args.join(' '));
         if (code === 0) {
