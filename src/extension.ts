@@ -45,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 		statusBarItem.show();
 	};
 
-	// tanka class for command -> apply, diff, show
+	// tanka class for command -> apply, prune, diff, show
 	const tanka = new Tanka(workspacePath!, outputChannel);
 
 	// context.subscriptions.push(vscode.workspace.onDidCloseTextDocument((e) => {
@@ -97,6 +97,20 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 		outputChannel.appendLine(stderr);
+		outputChannel.show();
+	});
+
+	registerCommand('vscode-tanka.env.prune', async (tankaNode: TankaNode) => {
+		showStatusBar('$(sync~spin) Tanka Pruning...', '');
+		const { code, stdout, stderr } = await tanka.prune(tankaNode.env);
+		statusBarItem.hide();
+
+		if (code == 0) {
+			outputChannel.appendLine(stdout);
+		}
+		else {
+			outputChannel.appendLine(stderr);
+		}
 		outputChannel.show();
 	});
 
