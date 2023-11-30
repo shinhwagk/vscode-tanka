@@ -59,26 +59,32 @@ export class Tanka {
     }
 
     public async diff(env: TankaEnvironment) {
-        const args: string[] = ['tk', 'diff', path.join(this.rootPath, env.metadata.namespace), '--name', `${env.metadata.name}`];
+        const args: string[] = ['tk', 'diff', path.join(this.rootPath, env.metadata.namespace), '--log-level', 'warn', '--name', `${env.metadata.name}`];
         this.outputChannel.appendLine("command: " + args.join(' '));
         return await exec(args.join(' '));
     }
 
     public async apply(env: TankaEnvironment) {
-        const args: string[] = ['tk', 'apply', path.join(this.rootPath, env.metadata.namespace), '--name', `${env.metadata.name}`, '--dangerous-auto-approve'];
+        const args: string[] = ['tk', 'apply', path.join(this.rootPath, env.metadata.namespace), '--log-level', 'warn', '--name', `${env.metadata.name}`, '--auto-approve always'];
         this.outputChannel.appendLine("command: " + args.join(' '));
         this.outputChannel.show()
         return await exec(args.join(' '));
     }
 
     public async show(env: TankaEnvironment) {
-        const args: string[] = ['tk', 'show', path.join(this.rootPath, env.metadata.namespace), '--name', env.metadata.name, '--dangerous-allow-redirect'];
+        const args: string[] = ['tk', 'show', path.join(this.rootPath, env.metadata.namespace), '--log-level', 'warn', '--name', env.metadata.name, '--dangerous-allow-redirect'];
+        this.outputChannel.appendLine("command: " + args.join(' '));
+        return await exec(args.join(' '));
+    }
+
+    public async prune(env: TankaEnvironment) {
+        const args: string[] = ['tk', 'prune', path.join(this.rootPath, env.metadata.namespace), '--log-level', 'warn', '--name', env.metadata.name, '--auto-approve always'];
         this.outputChannel.appendLine("command: " + args.join(' '));
         return await exec(args.join(' '));
     }
 
     private async generateEnvironments() {
-        const args: string[] = ['tk', 'env', 'list', this.rootPath, '--json'];
+        const args: string[] = ['tk', 'env', 'list', this.rootPath + '/environments', '--json'];
         this.outputChannel.appendLine("command: " + args.join(' '));
         const { code, stdout, stderr } = await exec(args.join(' '));
         if (code === 0) {
